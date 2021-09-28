@@ -11,11 +11,11 @@ export class MainComponentComponent implements OnInit {
 
     onSelect(chord: string): void {
         this.selectedchord = chord;
-        console.log(this.selectedchord);
     }
     constructor(private chordService: ChordServiceService) {}
 
     ngOnInit(): void {
         this.chords = this.chordService.getChordsJson();
+        console.log(this.chords);
     }
 }

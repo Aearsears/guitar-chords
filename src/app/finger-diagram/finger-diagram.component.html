@@ -1,3 +1,6 @@
 <div>
-    {{ chord }}
+    <h1>Finger Diagram</h1>
+    {{ selectedChord }}
 </div>
+
+<div *ngIf="chosenFingerPos">{{ chosenFingerPos.fingers }}</div>
