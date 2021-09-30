@@ -1,12 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ChordServiceService } from '../chord-service.service';
-import {
-    SVG,
-    extend as SVGextend,
-    Element as SVGElement,
-    SvgType,
-    Svg,
-} from '@svgdotjs/svg.js';
+import { ClickListenerService } from '../click-listener.service';
+import { Subscription } from 'rxjs';
+import { SVG, Svg } from '@svgdotjs/svg.js';
 
 @Component({
     selector: 'app-note-diagram',
@@ -20,6 +16,7 @@ export class NoteDiagramComponent implements OnInit {
     chosenFingerPos!: any;
     canvas!: Svg;
     circlesNested!: Svg;
+    subscription!: Subscription;
 
     setChord(s: String): void {
         this.selectedChord = s;
@@ -52,6 +49,9 @@ export class NoteDiagramComponent implements OnInit {
                     cir.on('mouseout', function () {
                         cir.fill({ color: 'black', opacity: 1 });
                     });
+                    cir.on('click', () => {
+                        this.onClickCircle();
+                    });
                     let pos = this.circlesNested.text(
                         this.chosenFingerPos.fingers[i - 1]
                     );
@@ -74,11 +74,29 @@ export class NoteDiagramComponent implements OnInit {
         );
         return obj.positions;
     }
-    constructor(private chordService: ChordServiceService) {}
-
+    constructor(
+        private chordService: ChordServiceService,
+        private clickService: ClickListenerService
+    ) {}
+    onClick() {
+        this.clickService.broadcastClick('note diagram was clicked!');
+    }
+    onClickCircle() {
+        this.clickService.broadcastClick(
+            'note diagram circle SVG was clicked!'
+        );
+    }
     ngOnInit(): void {
         this.chords = this.chordService.getChordsJson();
-        this.canvas = SVG().addTo('.diagram').size(500, 500);
+        this.canvas = SVG().addTo('.diagram-notes').size(500, 500);
         this.circlesNested = this.canvas.nested();
+        this.subscription = this.clickService.clickedNoteObservable.subscribe(
+            (x) => {
+                console.log(x);
+            }
+        );
+    }
+    ngOnDestroy() {
+        this.subscription.unsubscribe();
     }
 }
