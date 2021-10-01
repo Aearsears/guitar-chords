@@ -1,31 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef } from '@angular/core';
 import { ChordServiceService } from '../chord-service.service';
 import { ClickListenerService } from '../click-listener.service';
-import { Subscription } from 'rxjs';
-import { SVG, Svg } from '@svgdotjs/svg.js';
+import { DiagramComponent } from '../diagram/diagram.component';
 
 @Component({
     selector: 'app-note-diagram',
     templateUrl: './note-diagram.component.html',
     styleUrls: ['./note-diagram.component.scss'],
 })
-export class NoteDiagramComponent implements OnInit {
-    selectedChord!: String;
-    chords: any;
-    fingerPos!: any[];
-    chosenFingerPos!: any;
-    canvas!: Svg;
-    circlesNested!: Svg;
-    subscription!: Subscription;
-
-    setChord(s: String): void {
-        this.selectedChord = s;
-        this.fingerPos = this.getFingerPos();
-        // choosing the first finger position for now
-        this.chosenFingerPos = this.fingerPos[0];
-        console.log(this.chosenFingerPos);
-        this.drawChord();
-    }
+export class NoteDiagramComponent extends DiagramComponent implements OnInit {
     drawChord(): void {
         let rad: number = 40;
         if (this.circlesNested.has(this.circlesNested.circle())) {
@@ -42,15 +25,23 @@ export class NoteDiagramComponent implements OnInit {
                     cir.x(100 + i * 50 - rad / 2).y(
                         60 + this.chosenFingerPos.frets[i - 1] * 40
                     );
-                    cir.attr('class', 'mycircle');
+                    let note = this.fretToNote.fretToNote(
+                        i - 1,
+                        this.chosenFingerPos.frets[i - 1]
+                    );
+                    cir.attr('class', note);
                     cir.on('mouseover', function () {
-                        cir.fill({ color: '#f06', opacity: 0.6 });
+                        if (!cir.data('clicked')) {
+                            cir.fill({ color: '#f06', opacity: 0.6 });
+                        }
                     });
                     cir.on('mouseout', function () {
-                        cir.fill({ color: 'black', opacity: 1 });
+                        if (!cir.data('clicked')) {
+                            cir.fill({ color: 'black', opacity: 1 });
+                        }
                     });
                     cir.on('click', () => {
-                        this.onClickCircle();
+                        this.onClickCircle(cir.attr('class'));
                     });
                     let pos = this.circlesNested.text(
                         this.chosenFingerPos.fingers[i - 1]
@@ -67,36 +58,22 @@ export class NoteDiagramComponent implements OnInit {
             }
         }
     }
-    getFingerPos(): any[] {
-        let split = this.selectedChord.split(' ');
-        let obj = this.chords.chords[split[0]].find(
-            (element: any) => element.suffix === split[1]
-        );
-        return obj.positions;
-    }
     constructor(
-        private chordService: ChordServiceService,
-        private clickService: ClickListenerService
-    ) {}
-    onClick() {
-        this.clickService.broadcastClick('note diagram was clicked!');
-    }
-    onClickCircle() {
-        this.clickService.broadcastClick(
-            'note diagram circle SVG was clicked!'
+        chordService: ChordServiceService,
+        clickService: ClickListenerService,
+        elem: ElementRef
+    ) {
+        super(
+            chordService,
+            clickService,
+            elem.nativeElement.tagName.toLowerCase()
         );
     }
+
     ngOnInit(): void {
-        this.chords = this.chordService.getChordsJson();
-        this.canvas = SVG().addTo('.diagram-notes').size(500, 500);
-        this.circlesNested = this.canvas.nested();
-        this.subscription = this.clickService.clickedNoteObservable.subscribe(
-            (x) => {
-                console.log(x);
-            }
-        );
+        super.ngOnInit();
     }
     ngOnDestroy() {
-        this.subscription.unsubscribe();
+        super.ngOnDestroy();
     }
 }

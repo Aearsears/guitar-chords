@@ -1,0 +1,19 @@
+a {
+    &:link {
+        text-decoration: none;
+    }
+    &:visited {
+        text-decoration: none;
+    }
+    &:hover {
+        text-decoration: underline;
+    }
+    &:active {
+        text-decoration: underline;
+    }
+    color: white;
+}
+
+mat-toolbar a {
+    padding: 1em;
+}
