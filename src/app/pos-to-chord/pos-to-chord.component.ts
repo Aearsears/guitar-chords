@@ -10,5 +10,5 @@ export class PosToChordComponent implements OnInit {
     // How to implement the serach? BST?
     constructor() {}
 
-    ngOnInit(): void {}
+    ngOnInit(): void {return;}
 }
