@@ -17,7 +17,4 @@ export class MainComponentComponent implements OnInit {
     ngOnInit(): void {
         this.chords = this.chordService.getChordsJson();
     }
-    ngOnDestroy() {
-        this.ngOnDestroy();
-    }
 }
