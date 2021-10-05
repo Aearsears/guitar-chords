@@ -41,6 +41,16 @@ export class NoteDiagramComponent extends DiagramComponent implements OnInit {
                 let note = this.fretToNote.midiToNote(
                     this.chosenFingerPos.midi[midiCounter]
                 );
+                // position of circle note text
+                let pos = this.circlesNested.text(note as string);
+                pos.x(150 + j * 30).y(
+                    this.getYPos(this.chosenFingerPos.midi[midiCounter]) + 10
+                );
+                pos.font({
+                    fill: 'white',
+                    family: 'Roboto',
+                    size: 20,
+                });
                 midiCounter++;
                 if (typeof note === 'string') {
                     let n = note.replace(/ /g, '');
@@ -59,16 +69,6 @@ export class NoteDiagramComponent extends DiagramComponent implements OnInit {
                 });
                 cir.on('click', () => {
                     this.onClickCircle(cir.attr('class'));
-                });
-                // position of circle note text
-                let pos = this.circlesNested.text(
-                    this.chosenFingerPos.fingers[j]
-                );
-                pos.x(100 + j * 50).y(70 + this.chosenFingerPos.frets[j] * rad);
-                pos.font({
-                    fill: 'white',
-                    family: 'Roboto',
-                    size: 20,
                 });
             }
         }

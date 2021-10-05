@@ -8,6 +8,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { MainComponentComponent } from './main-component/main-component.component';
 import { FingerDiagramComponent } from './finger-diagram/finger-diagram.component';
 import { NoteDiagramComponent } from './note-diagram/note-diagram.component';
@@ -32,6 +34,8 @@ import { PosToChordComponent } from './pos-to-chord/pos-to-chord.component';
         MatToolbarModule,
         MatChipsModule,
         MatTooltipModule,
+        MatButtonModule,
+        MatIconModule,
     ],
     providers: [],
     bootstrap: [AppComponent],

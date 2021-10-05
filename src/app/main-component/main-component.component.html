@@ -1,57 +1,40 @@
 <div class="container">
     <div *ngIf="chords" class="select-chord">
-        <mat-chip-list aria-label="Fish selection">
-            <mat-chip
-                color="primary"
-                *ngFor="let key of chords.keys"
-                (click)="
-                    onSelect(
-                        key +
-                            ' ' +
-                            chords.chords[key.replace('#', 'sharp')][0].suffix
-                    );
-                    finger.setChord(
-                        key +
-                            ' ' +
-                            chords.chords[key.replace('#', 'sharp')][0].suffix
-                    );
-                    note.setChord(
-                        key +
-                            ' ' +
-                            chords.chords[key.replace('#', 'sharp')][0].suffix
-                    )
-                "
-                >{{ key }}
-                {{
-                    chords.chords[key.replace("#", "sharp")][0].suffix
-                }}</mat-chip
-            >
-            <mat-chip
-                color="primary"
-                *ngFor="let key of chords.keys"
-                (click)="
-                    onSelect(
-                        key +
-                            ' ' +
-                            chords.chords[key.replace('#', 'sharp')][1].suffix
-                    );
-                    finger.setChord(
-                        key +
-                            ' ' +
-                            chords.chords[key.replace('#', 'sharp')][1].suffix
-                    );
-                    note.setChord(
-                        key +
-                            ' ' +
-                            chords.chords[key.replace('#', 'sharp')][1].suffix
-                    )
-                "
-                >{{ key }}
-                {{
-                    chords.chords[key.replace("#", "sharp")][1].suffix
-                }}</mat-chip
-            >
-        </mat-chip-list>
+        <div class="select-key">
+            <h4>Choose a key</h4>
+            <mat-chip-list aria-label="Fish selection">
+                <mat-chip
+                    color="primary"
+                    *ngFor="let key of chords.keys"
+                    (click)="
+                        onSelectKey(key); finger.setKey(key); note.setKey(key)
+                    "
+                    >{{ key }}</mat-chip
+                >
+            </mat-chip-list>
+        </div>
+        <div class="select-suffix" *ngIf="selectedKey">
+            <h4>Choose a suffix</h4>
+            <mat-chip-list aria-label="Fish selection">
+                <mat-chip
+                    color="primary"
+                    *ngFor="
+                        let unit of chords.chords[
+                            selectedKey.replace('#', 'sharp')
+                        ]
+                    "
+                    (click)="
+                        onSelectSuffix(unit.suffix);
+                        finger.setSuffix(unit.suffix);
+                        note.setSuffix(unit.suffix)
+                    "
+                    >{{ unit.suffix }}</mat-chip
+                >
+            </mat-chip-list>
+        </div>
+    </div>
+    <div *ngIf="selectedKey && selectedSuffix">
+        <h2>Selected chord: {{ selectedKey }}&nbsp;{{ selectedSuffix }}</h2>
     </div>
     <div class="music-notes">
         <app-finger-diagram #finger></app-finger-diagram>

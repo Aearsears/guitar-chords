@@ -1,3 +1,4 @@
+import { ThisReceiver } from '@angular/compiler';
 import { Component, OnInit, Inject } from '@angular/core';
 import { List, SVG, Svg, Element } from '@svgdotjs/svg.js';
 import { Subscription } from 'rxjs';
@@ -11,10 +12,12 @@ import { FretToNote } from '../fret-to-note';
     styleUrls: ['./diagram.component.scss'],
 })
 export class DiagramComponent implements OnInit {
-    selectedChord!: String;
+    selectedKey!: string;
+    selectedSuffix!: string;
     chords: any;
     fingerPos!: any[];
     chosenFingerPos!: any;
+    chosenFingerCount!: number;
     canvas!: Svg;
     circlesNested!: Svg;
     subscription!: Subscription;
@@ -23,27 +26,6 @@ export class DiagramComponent implements OnInit {
     //inheriters can use but not other objects
     protected chordService: ChordServiceService;
     protected clickService: ClickListenerService;
-
-    setChord(s: String): void {
-        this.selectedChord = s;
-        this.fingerPos = this.getFingerPos();
-        // choosing the first finger position for now
-        this.chosenFingerPos = this.fingerPos[0];
-        console.log(this.chosenFingerPos);
-        this.drawChord();
-    }
-    drawChord(): void {
-        throw new Error('drawChord() not yet implemented!');
-    }
-
-    getFingerPos(): any[] {
-        let split = this.selectedChord.split(' ');
-        console.log(this.chords);
-        let obj = this.chords.chords[split[0]].find(
-            (element: any) => element.suffix === split[1]
-        );
-        return obj.positions;
-    }
 
     constructor(
         chordService: ChordServiceService,
@@ -55,6 +37,50 @@ export class DiagramComponent implements OnInit {
         this.name = name;
     }
 
+    setKey(key: string): void {
+        this.selectedKey = key;
+    }
+    setSuffix(suff: string): void {
+        this.selectedSuffix = suff;
+        this.fingerPos = this.getFingerPos();
+        this.chosenFingerCount = 0;
+        this.chosenFingerPos = this.fingerPos[this.chosenFingerCount];
+        console.log(this.chosenFingerPos);
+        this.drawChord();
+    }
+    setFingerPos(type: 'increase' | 'decrease'): void {
+        if (type === 'increase') {
+            this.chosenFingerCount++;
+            this.chosenFingerCount =
+                this.chosenFingerCount % this.fingerPos.length;
+        } else {
+            this.chosenFingerCount--;
+            if (this.chosenFingerCount < 0) {
+                // handling negative numbers in modulo, could have also just handled the case where it is equal to -1
+                this.chosenFingerCount =
+                    ((this.chosenFingerCount % this.fingerPos.length) +
+                        this.fingerPos.length) %
+                    this.fingerPos.length;
+            } else {
+                this.chosenFingerCount =
+                    this.chosenFingerCount % this.fingerPos.length;
+            }
+        }
+        this.chosenFingerPos = this.fingerPos[this.chosenFingerCount];
+        this.drawChord();
+    }
+    drawChord(): void {
+        throw new Error('drawChord() not yet implemented!');
+    }
+
+    getFingerPos(): any[] {
+        console.log(this.chords);
+        let obj = this.chords.chords[this.selectedKey].find(
+            (element: any) => element.suffix === this.selectedSuffix
+        );
+        return obj.positions;
+    }
+
     onClick() {
         // this.clickService.broadcastClick('finger diagram was clicked!');
     }
@@ -64,7 +90,6 @@ export class DiagramComponent implements OnInit {
     afterClickCircleBroadcast(note: string) {
         //because each subscriber will receive their own message, we will first broadcast the message, then perform the operations to avoid doing it two times
         let clickedC: List<Element> = this.canvas.find(`.${note}`);
-        console.log(clickedC.length);
         for (var circle of clickedC) {
             if (typeof circle != 'undefined') {
                 if (!circle.data('clicked')) {
@@ -77,13 +102,22 @@ export class DiagramComponent implements OnInit {
             }
         }
     }
+
+    onClickChangePos(type: 'increase' | 'decrease'): void {
+        this.clickService.broadcastClick(type);
+    }
+
     ngOnInit(): void {
         this.chords = this.chordService.getChordsJson();
-        this.canvas = SVG().addTo(this.name).size(500, 500);
+        this.canvas = SVG().addTo(this.name).size('100%', 600);
         this.circlesNested = this.canvas.nested();
         this.subscription = this.clickService.clickedNoteObservable.subscribe(
-            (x) => {
-                this.afterClickCircleBroadcast(x);
+            (x: string) => {
+                if (x === 'increase' || x === 'decrease') {
+                    this.setFingerPos(x);
+                } else {
+                    this.afterClickCircleBroadcast(x);
+                }
             }
         );
     }

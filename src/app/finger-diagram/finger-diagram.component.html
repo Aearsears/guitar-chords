@@ -1,7 +1,23 @@
 <div>
     <h1>Finger Diagram</h1>
-    {{ selectedChord }}
 </div>
 
-<div *ngIf="chosenFingerPos">{{ chosenFingerPos.fingers }}</div>
-<div class="diagram-fingers" (click)="onClick()"></div>
+<div class="posNav" *ngIf="chosenFingerPos">
+    <button
+        mat-icon-button
+        color="primary"
+        aria-label="button left"
+        (click)="onClickChangePos('decrease')"
+    >
+        <mat-icon>chevron_left</mat-icon>
+    </button>
+    {{ chosenFingerCount + 1 }} of {{ fingerPos.length }} positions
+    <button
+        mat-icon-button
+        color="primary"
+        aria-label="Example icon button with a home icon"
+        (click)="onClickChangePos('increase')"
+    >
+        <mat-icon>chevron_right</mat-icon>
+    </button>
+</div>

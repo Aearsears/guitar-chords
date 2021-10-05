@@ -7,13 +7,17 @@ import { ChordServiceService } from '../chord-service.service';
 })
 export class MainComponentComponent implements OnInit {
     chords: any;
-    selectedchord!: string;
+    selectedKey!: string;
+    selectedSuffix!: string;
 
-    onSelect(chord: string): void {
-        this.selectedchord = chord;
-    }
     constructor(private chordService: ChordServiceService) {}
 
+    onSelectKey(key: string): void {
+        this.selectedKey = key;
+    }
+    onSelectSuffix(s: string): void {
+        this.selectedSuffix = s;
+    }
     ngOnInit(): void {
         this.chords = this.chordService.getChordsJson();
     }

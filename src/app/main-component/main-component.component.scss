@@ -1,10 +1,13 @@
 .music-notes {
     display: flex;
 }
+.music-notes > * {
+    flex: 50%;
+}
+
 .container {
     margin: 1%;
 }
-.music-notes app-finger-diagram div.diagram-fingers svg svg circle.C {
-    fill: blueviolet;
-    opacity: 1;
+.select-chord {
+    margin-bottom: 1em;
 }
