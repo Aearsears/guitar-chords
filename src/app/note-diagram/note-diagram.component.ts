@@ -73,6 +73,7 @@ export class NoteDiagramComponent extends DiagramComponent implements OnInit {
             }
         }
     }
+    // TODO: fix the half steps between e and f and b and c and add sharps and flats
     getYPos(midiValue: number): number {
         let step = 20;
         // C4 y position

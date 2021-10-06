@@ -124,4 +124,5 @@ export class DiagramComponent implements OnInit {
     ngOnDestroy() {
         this.subscription.unsubscribe();
     }
+    // TODO: on hover, change the colour in the other diagram as well
 }

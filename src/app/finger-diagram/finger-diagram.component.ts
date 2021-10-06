@@ -71,6 +71,7 @@ export class FingerDiagramComponent extends DiagramComponent implements OnInit {
             }
         }
     }
+    // TODO: add the number for base fret and add capo
     constructor(
         chordService: ChordServiceService,
         clickService: ClickListenerService,
