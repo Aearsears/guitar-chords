@@ -10,6 +10,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MainComponentComponent } from './main-component/main-component.component';
 import { FingerDiagramComponent } from './finger-diagram/finger-diagram.component';
 import { NoteDiagramComponent } from './note-diagram/note-diagram.component';
@@ -36,6 +37,7 @@ import { PosToChordComponent } from './pos-to-chord/pos-to-chord.component';
         MatTooltipModule,
         MatButtonModule,
         MatIconModule,
+        MatProgressSpinnerModule,
     ],
     providers: [],
     bootstrap: [AppComponent],

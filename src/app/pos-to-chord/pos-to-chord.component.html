@@ -1,2 +1,8 @@
-<p>WIP</p>
-<app-guitar-diagram></app-guitar-diagram>
+<p>X is for a mute string and O is for an open string.</p>
+<button mat-raised-button color="primary" (click)="resetCircles()">
+    Reset
+</button>
+<div class="searchDiv">
+    <mat-spinner *ngIf="searching"></mat-spinner>
+    <p *ngIf="searchResult">{{ searchResult }}</p>
+</div>
