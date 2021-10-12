@@ -75,9 +75,9 @@ export class DiagramComponent implements OnInit {
 
     getFingerPos(): any[] {
         console.log(this.chords);
-        let obj = this.chords.chords[this.selectedKey].find(
-            (element: any) => element.suffix === this.selectedSuffix
-        );
+        let obj = this.chords.chords[
+            this.selectedKey.replace('#', 'sharp')
+        ].find((element: any) => element.suffix === this.selectedSuffix);
         return obj.positions;
     }
 
@@ -102,6 +102,21 @@ export class DiagramComponent implements OnInit {
             }
         }
     }
+    afterHoverCircleBroadcast(note: string) {
+        //because each subscriber will receive their own message, we will first broadcast the message, then perform the operations to avoid doing it two times
+        let clickedC: List<Element> = this.canvas.find(`.${note}`);
+        for (var circle of clickedC) {
+            if (typeof circle != 'undefined') {
+                if (!circle.data('hovered')) {
+                    circle.data('hovered', true, true);
+                    circle.fill({ color: '#f06', opacity: 0.6 });
+                } else {
+                    circle.data('hovered', false, true);
+                    circle.fill({ color: 'black', opacity: 1 });
+                }
+            }
+        }
+    }
 
     onClickChangePos(type: 'increase' | 'decrease'): void {
         this.clickService.broadcastClick(type);
@@ -116,7 +131,12 @@ export class DiagramComponent implements OnInit {
                 if (x === 'increase' || x === 'decrease') {
                     this.setFingerPos(x);
                 } else {
-                    this.afterClickCircleBroadcast(x);
+                    let split = x.split(' ');
+                    if (split[0] === 'mouseover' || split[0] === 'mouseout') {
+                        this.afterHoverCircleBroadcast(split[1]);
+                    } else {
+                        this.afterClickCircleBroadcast(x);
+                    }
                 }
             }
         );
@@ -124,5 +144,4 @@ export class DiagramComponent implements OnInit {
     ngOnDestroy() {
         this.subscription.unsubscribe();
     }
-    // TODO: on hover, change the colour in the other diagram as well
 }

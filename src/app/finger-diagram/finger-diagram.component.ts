@@ -44,14 +44,14 @@ export class FingerDiagramComponent extends DiagramComponent implements OnInit {
                     cir.attr('class', note.replace(/ /g, ''));
                 }
                 midiCounter++;
-                cir.on('mouseover', function () {
+                cir.on('mouseover', () => {
                     if (!cir.data('clicked')) {
-                        cir.fill({ color: '#f06', opacity: 0.6 });
+                        this.onClickCircle('mouseover ' + cir.attr('class'));
                     }
                 });
-                cir.on('mouseout', function () {
+                cir.on('mouseout', () => {
                     if (!cir.data('clicked')) {
-                        cir.fill({ color: 'black', opacity: 1 });
+                        this.onClickCircle('mouseout ' + cir.attr('class'));
                     }
                 });
                 cir.on('click', () => {
@@ -70,8 +70,16 @@ export class FingerDiagramComponent extends DiagramComponent implements OnInit {
                 });
             }
         }
+        //text for base fret
+        let baseFret = this.circlesNested.text(this.chosenFingerPos.baseFret);
+        baseFret.x(100).y(100);
+        baseFret.font({
+            fill: 'black',
+            family: 'Roboto',
+            size: 30,
+        });
     }
-    // TODO: add the number for base fret and add capo
+    // TODO: add barres to make prettier
     constructor(
         chordService: ChordServiceService,
         clickService: ClickListenerService,

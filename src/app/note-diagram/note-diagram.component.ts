@@ -57,14 +57,14 @@ export class NoteDiagramComponent extends DiagramComponent implements OnInit {
                     cir.addClass(n);
                     cir.add(SVG(`<title>${n}</title>`));
                 }
-                cir.on('mouseover', function () {
+                cir.on('mouseover', () => {
                     if (!cir.data('clicked')) {
-                        cir.fill({ color: '#f06', opacity: 0.6 });
+                        this.onClickCircle('mouseover ' + cir.attr('class'));
                     }
                 });
-                cir.on('mouseout', function () {
+                cir.on('mouseout', () => {
                     if (!cir.data('clicked')) {
-                        cir.fill({ color: 'black', opacity: 1 });
+                        this.onClickCircle('mouseout ' + cir.attr('class'));
                     }
                 });
                 cir.on('click', () => {
@@ -79,11 +79,22 @@ export class NoteDiagramComponent extends DiagramComponent implements OnInit {
         // C4 y position
         let c4 = 280;
         // C4's midi value is 60
-        let diff = 60 - midiValue;
-        //if diff is even, then move up, if it is odd, then add sharp
-        //exception to this rule is E and F and B and C, where a half step will move up the note in the diagram
-        let movement = diff / 2;
-        return c4 + step * movement;
+        //to handle the half step between b and c, the midi value is 12n-1
+        if ((midiValue + 1) % 12 === 0) {
+            let diff = 60 - midiValue;
+            if (diff != 1) {
+                return c4 + step * parseInt((diff / 2).toString(), 10) - step;
+            } else {
+                return c4 + step * (60 - midiValue);
+            }
+        } else {
+            //doing this to handle the other half steps
+            let diff = 60 - (midiValue + (midiValue % 2));
+            //12 midi values separate one octave from another
+            //exception to this rule is E and F and B and C, where a half step will move up the note in the diagram
+            let movement = parseInt((diff / 2).toString(), 10);
+            return c4 + step * movement;
+        }
     }
     constructor(
         chordService: ChordServiceService,

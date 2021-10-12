@@ -1,7 +1,5 @@
 export class FretToNote {
     // for now support up to the 12th fret
-    // TODO: add the c4th
-
     // map of 1:E
     private noteMap: Map<number, string> = new Map<number, string>();
     private notes: string[] = [

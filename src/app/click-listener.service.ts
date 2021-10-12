@@ -5,8 +5,7 @@ import { Subject } from 'rxjs';
     providedIn: 'root',
 })
 export class ClickListenerService {
-    //change type later when clearly define the message to be broadcasted
-    private clickSubject = new Subject<any>();
+    private clickSubject = new Subject<string>();
     clickedNoteObservable = this.clickSubject.asObservable();
     broadcastClick(x: any) {
         this.clickSubject.next(x);
