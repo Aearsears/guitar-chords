@@ -131,7 +131,6 @@ export class NoteDiagramComponent extends DiagramComponent implements OnInit {
                 counter++;
             }
         }
-        console.log(this.posMap);
     }
     ngOnDestroy() {
         super.ngOnDestroy();

@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit } from '@angular/core';
-import { Circle, Rect, Svg, Element, Path } from '@svgdotjs/svg.js';
+import { Circle, Svg, Element, Path } from '@svgdotjs/svg.js';
 import { ChordServiceService } from '../chord-service.service';
 import { ClickListenerService } from '../click-listener.service';
 import { DiagramComponent } from '../diagram/diagram.component';
@@ -46,7 +46,6 @@ export class PosToChordComponent extends DiagramComponent implements OnInit {
             // the first string drawn is E4, then B3, etc
             line.id(notes[5 - i]);
             line.on('click', (event: Event) => {
-                console.log(event);
                 if (!this.isPointerEvent(event)) {
                     throw new Error('Event Type Error.');
                 }
@@ -197,7 +196,6 @@ export class PosToChordComponent extends DiagramComponent implements OnInit {
         //settimeout(search,1000);
         let accum: string = '';
         //iterate through array of num and append to accum string
-        console.log(this.searchArray);
         for (let num of this.searchArray) {
             accum = accum + num.toString();
         }

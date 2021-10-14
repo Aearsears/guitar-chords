@@ -1,5 +1,4 @@
-import { ThisReceiver } from '@angular/compiler';
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
 import { List, SVG, Svg, Element } from '@svgdotjs/svg.js';
 import { Subscription } from 'rxjs';
 import { ChordServiceService } from '../chord-service.service';
@@ -11,7 +10,7 @@ import { FretToNote } from '../fret-to-note';
     templateUrl: './diagram.component.html',
     styleUrls: ['./diagram.component.scss'],
 })
-export class DiagramComponent implements OnInit {
+export class DiagramComponent implements OnInit, OnDestroy {
     selectedKey!: string;
     selectedSuffix!: string;
     chords: any;
@@ -45,7 +44,6 @@ export class DiagramComponent implements OnInit {
         this.fingerPos = this.getFingerPos();
         this.chosenFingerCount = 0;
         this.chosenFingerPos = this.fingerPos[this.chosenFingerCount];
-        console.log(this.chosenFingerPos);
         this.drawChord();
     }
     setFingerPos(type: 'increase' | 'decrease'): void {
@@ -74,7 +72,6 @@ export class DiagramComponent implements OnInit {
     }
 
     getFingerPos(): any[] {
-        console.log(this.chords);
         let obj = this.chords.chords[
             this.selectedKey.replace('#', 'sharp')
         ].find((element: any) => element.suffix === this.selectedSuffix);

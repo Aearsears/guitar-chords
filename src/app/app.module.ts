@@ -14,7 +14,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MainComponentComponent } from './main-component/main-component.component';
 import { FingerDiagramComponent } from './finger-diagram/finger-diagram.component';
 import { NoteDiagramComponent } from './note-diagram/note-diagram.component';
-import { GuitarDiagramComponent } from './guitar-diagram/guitar-diagram.component';
 import { DiagramComponent } from './diagram/diagram.component';
 import { PosToChordComponent } from './pos-to-chord/pos-to-chord.component';
 
@@ -24,7 +23,6 @@ import { PosToChordComponent } from './pos-to-chord/pos-to-chord.component';
         MainComponentComponent,
         FingerDiagramComponent,
         NoteDiagramComponent,
-        GuitarDiagramComponent,
         DiagramComponent,
         PosToChordComponent,
     ],
