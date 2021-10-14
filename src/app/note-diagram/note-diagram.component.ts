@@ -9,6 +9,7 @@ import { SVG } from '@svgdotjs/svg.js';
     styleUrls: ['./note-diagram.component.scss'],
 })
 export class NoteDiagramComponent extends DiagramComponent implements OnInit {
+    posMap!: Map<number, number>;
     drawChord(): void {
         let rad: number = 40;
         if (this.circlesNested.has(this.circlesNested.circle())) {
@@ -16,16 +17,18 @@ export class NoteDiagramComponent extends DiagramComponent implements OnInit {
         }
         this.canvas
             .path(
-                'M 138 225 Q 125.5 187.5 163 187.5 Q 200.5 212.5 175.5 237.5 Q 138 275 100.5 237.5 C 88 162.5 163 137.5 175.5 75 Q 163 37.5 113 50 C 100.5 137.5 175.5 212.5 175.5 300 Q 150.5 337.5 138 300'
+                'M 138 225 Q 125.5 187.5 163 187.5 Q 200.5 212.5 175.5 237.5 Q 138 275 100.5 237.5 C 88 162.5 163 137.5 175.5 75 Q 163 37.5 113 50 C 100.5 137.5 175.5 212.5 175.5 300 Q 150.5 337.5 138 300 M 145.349 367.004 C 155.232 370.109 141.113 390.723 130.665 370.675 Q 142.242 328.6 174.658 361.034 C 175.918 363.786 210.861 427.998 129.253 419.809 M 196.885 372.865 A 1 1 0 0 0 196.635 376.73 A 1 1 0 0 0 196.766 372.859 M 196.807 385.648 A 1 1 0 0 0 195.71 388.465 A 1 1 0 0 0 196.719 385.615'
             )
             .attr({
                 fill: 'none',
                 stroke: 'black',
                 'stroke-width': '3',
             });
-        let endline = this.canvas.line(90, 100, 90, 260);
-        endline.stroke({ color: 'black', width: 10, linecap: 'square' });
-        for (let i = 1; i < 6; i++) {
+        let bass = this.canvas.line(90, 340, 90, 500);
+        bass.stroke({ color: 'black', width: 10, linecap: 'square' });
+        let treble = this.canvas.line(90, 100, 90, 260);
+        treble.stroke({ color: 'black', width: 10, linecap: 'square' });
+        for (let i = 1; i < 13; i++) {
             // stave horizonal lines
             let line = this.canvas.line(90, 60 + i * rad, 400, 60 + i * rad);
             line.stroke({ color: 'black', width: 3, linecap: 'round' });
@@ -35,7 +38,7 @@ export class NoteDiagramComponent extends DiagramComponent implements OnInit {
             if (this.chosenFingerPos.frets[j] != -1) {
                 // creating circle
                 let cir = this.circlesNested.circle(rad);
-                cir.x(140 + j * 30).y(
+                cir.x(180 + j * 30).y(
                     this.getYPos(this.chosenFingerPos.midi[midiCounter])
                 );
                 let note = this.fretToNote.midiToNote(
@@ -43,13 +46,20 @@ export class NoteDiagramComponent extends DiagramComponent implements OnInit {
                 );
                 // position of circle note text
                 let pos = this.circlesNested.text(note as string);
-                pos.x(150 + j * 30).y(
+                pos.x(190 + j * 30).y(
                     this.getYPos(this.chosenFingerPos.midi[midiCounter]) + 10
                 );
                 pos.font({
                     fill: 'white',
                     family: 'Roboto',
                     size: 20,
+                });
+                pos.attr({
+                    'stroke-width': '10px',
+                    'paint-order': 'stroke',
+                    'stroke-linecap': 'butt',
+                    'stroke-linejoin': 'round',
+                    stroke: 'black',
                 });
                 midiCounter++;
                 if (typeof note === 'string') {
@@ -72,29 +82,11 @@ export class NoteDiagramComponent extends DiagramComponent implements OnInit {
                 });
             }
         }
+        this.circlesNested.front();
     }
-    // TODO: fix the half steps between e and f and b and c and add sharps and flats
+    // TODO: add sharps and flats to make notes prettier
     getYPos(midiValue: number): number {
-        let step = 20;
-        // C4 y position
-        let c4 = 280;
-        // C4's midi value is 60
-        //to handle the half step between b and c, the midi value is 12n-1
-        if ((midiValue + 1) % 12 === 0) {
-            let diff = 60 - midiValue;
-            if (diff != 1) {
-                return c4 + step * parseInt((diff / 2).toString(), 10) - step;
-            } else {
-                return c4 + step * (60 - midiValue);
-            }
-        } else {
-            //doing this to handle the other half steps
-            let diff = 60 - (midiValue + (midiValue % 2));
-            //12 midi values separate one octave from another
-            //exception to this rule is E and F and B and C, where a half step will move up the note in the diagram
-            let movement = parseInt((diff / 2).toString(), 10);
-            return c4 + step * movement;
-        }
+        return this.posMap.get(midiValue) as number;
     }
     constructor(
         chordService: ChordServiceService,
@@ -110,6 +102,36 @@ export class NoteDiagramComponent extends DiagramComponent implements OnInit {
 
     ngOnInit(): void {
         super.ngOnInit();
+        /*  upper end midi is E6 = 88
+        lower end is E2 = 40
+        c4 y pos is 280
+        e2=160
+
+        */
+        this.posMap = new Map<number, number>();
+        let counter: number = 0;
+        let e2: number = 520;
+        let step: number = 20;
+        for (var i = 40; i <= 88; i++) {
+            this.posMap.set(i, e2);
+            if (counter === 11) {
+                e2 = e2 - step;
+                counter = 0;
+            } else if (
+                counter === 0 ||
+                counter === 2 ||
+                counter === 4 ||
+                counter === 6 ||
+                counter === 7 ||
+                counter === 9
+            ) {
+                e2 = e2 - step;
+                counter++;
+            } else {
+                counter++;
+            }
+        }
+        console.log(this.posMap);
     }
     ngOnDestroy() {
         super.ngOnDestroy();
