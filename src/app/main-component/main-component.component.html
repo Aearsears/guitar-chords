@@ -1,17 +1,56 @@
 <div class="container">
     <div *ngIf="chords" class="select-chord">
         <div class="select-key">
-            <h4>Choose a key:</h4>
-            <mat-chip-list aria-label="Fish selection">
-                <mat-chip
-                    color="primary"
-                    *ngFor="let key of chords.keys"
-                    (click)="
-                        onSelectKey(key); finger.setKey(key); note.setKey(key)
-                    "
-                    >{{ key }}</mat-chip
-                >
-            </mat-chip-list>
+            <div class="keys">
+                <h4>Choose a key:</h4>
+                <mat-chip-list aria-label="Fish selection">
+                    <mat-chip
+                        color="primary"
+                        *ngFor="let key of chords.keys"
+                        (click)="
+                            onSelectKey(key);
+                            finger.setKey(key);
+                            note.setKey(key)
+                        "
+                        >{{ key }}</mat-chip
+                    >
+                </mat-chip-list>
+            </div>
+            <div class="stats">
+                <div class="charts">
+                    <p>Most used guitar strings</p>
+                    <ngx-charts-bar-vertical
+                        [view]="view"
+                        [scheme]="colorScheme"
+                        [results]="used"
+                        [gradient]="gradient"
+                        [xAxis]="showXAxis"
+                        [yAxis]="showYAxis"
+                        [legend]="showLegend"
+                        [showXAxisLabel]="showXAxisLabel"
+                        [showYAxisLabel]="showYAxisLabel"
+                        [xAxisLabel]="xAxisLabel"
+                        [yAxisLabel]="yAxisLabel"
+                    >
+                    </ngx-charts-bar-vertical>
+                    <p>Most muted guitar strings</p>
+                    <ngx-charts-bar-vertical
+                        [view]="view"
+                        [scheme]="colorScheme"
+                        [results]="muted"
+                        [gradient]="gradient"
+                        [xAxis]="showXAxis"
+                        [yAxis]="showYAxis"
+                        [legend]="showLegend"
+                        [showXAxisLabel]="showXAxisLabel"
+                        [showYAxisLabel]="showYAxisLabel"
+                        [xAxisLabel]="xAxisLabel"
+                        [yAxisLabel]="yAxisLabel"
+                    >
+                    </ngx-charts-bar-vertical>
+                    <p>Number of chords: 2422</p>
+                </div>
+            </div>
         </div>
         <div class="select-suffix" *ngIf="selectedKey">
             <h4>Choose a suffix:</h4>

@@ -17,6 +17,8 @@ import { NoteDiagramComponent } from './note-diagram/note-diagram.component';
 import { DiagramComponent } from './diagram/diagram.component';
 import { PosToChordComponent } from './pos-to-chord/pos-to-chord.component';
 
+import { NgxChartsModule } from '@swimlane/ngx-charts';
+
 @NgModule({
     declarations: [
         AppComponent,
@@ -36,6 +38,7 @@ import { PosToChordComponent } from './pos-to-chord/pos-to-chord.component';
         MatButtonModule,
         MatIconModule,
         MatProgressSpinnerModule,
+        NgxChartsModule,
     ],
     providers: [],
     bootstrap: [AppComponent],

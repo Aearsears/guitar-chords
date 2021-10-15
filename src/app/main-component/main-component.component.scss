@@ -11,3 +11,18 @@
 .select-chord {
     margin-bottom: 1em;
 }
+.select-key {
+    display: flex;
+}
+.stats {
+    width: 50%;
+    flex-grow: 1;
+    padding-left: 1em;
+}
+.keys {
+    // width: 50%;
+}
+.charts {
+    display: flex;
+    align-items: center;
+}
